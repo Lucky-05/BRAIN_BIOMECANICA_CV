@@ -5,13 +5,13 @@ import torch
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-model = YOLO('yolov8s-pose.pt')
+model = YOLO('yolov8n-pose.pt')
 model.to(device)
 
 # Open the video file
-# cap = cv2.VideoCapture('Movimiento 1 - Caminata.mp4')
-# cap = cv2.VideoCapture('Movimiento 2 - Salto.mp4')
-cap = cv2.VideoCapture('Movimiento 3 - Secuencia de Taekwondo.mp4')
+# 0 depth 
+# 1 rgb
+cap = cv2.VideoCapture(1)
 
 
 
@@ -20,7 +20,7 @@ frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 # Create a VideoWriter object to save the output video
-out = cv2.VideoWriter('output_video2-+.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30, (frame_width, frame_height))
+# out = cv2.VideoWriter('output_video2-+.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30, (frame_width, frame_height))
 
 bbox_color = (150, 0, 0)    
 bbox_thickness = 6
@@ -95,19 +95,19 @@ while cap.isOpened():
         frame = cv2.putText(frame, bbox_label, (bbox_xyxy[0]+bbox_labelstr['offset_x'], bbox_xyxy[1]+bbox_labelstr['offset_y']), cv2.FONT_HERSHEY_SIMPLEX, bbox_labelstr['font_size'], bbox_color, bbox_labelstr['font_thickness'])
         
         bbox_keypoints = bboxes_keypoints[idx]
-        for skeleton in skeleton_map:
-            srt_kpt_id = skeleton['srt_kpt_id']
-            srt_kpt_x = bbox_keypoints[srt_kpt_id][0]
-            srt_kpt_y = bbox_keypoints[srt_kpt_id][1]
+        # for skeleton in skeleton_map:
+        #     srt_kpt_id = skeleton['srt_kpt_id']
+        #     srt_kpt_x = bbox_keypoints[srt_kpt_id][0]
+        #     srt_kpt_y = bbox_keypoints[srt_kpt_id][1]
             
-            dst_kpt_id = skeleton['dst_kpt_id']
-            dst_kpt_x = bbox_keypoints[dst_kpt_id][0]
-            dst_kpt_y = bbox_keypoints[dst_kpt_id][1]
+        #     dst_kpt_id = skeleton['dst_kpt_id']
+        #     dst_kpt_x = bbox_keypoints[dst_kpt_id][0]
+        #     dst_kpt_y = bbox_keypoints[dst_kpt_id][1]
             
-            skeleton_color = skeleton['color']
-            skeleton_thickness = skeleton['thickness']
+        #     skeleton_color = skeleton['color']
+        #     skeleton_thickness = skeleton['thickness']
             
-            frame = cv2.line(frame, (srt_kpt_x, srt_kpt_y), (dst_kpt_x, dst_kpt_y), color=skeleton_color, thickness=skeleton_thickness)
+        #     frame = cv2.line(frame, (srt_kpt_x, srt_kpt_y), (dst_kpt_x, dst_kpt_y), color=skeleton_color, thickness=skeleton_thickness)
         
         for kpt_id in kpt_color_map:
             kpt_color = kpt_color_map[kpt_id]['color']
@@ -115,11 +115,13 @@ while cap.isOpened():
             kpt_x = bbox_keypoints[kpt_id][0]
             kpt_y = bbox_keypoints[kpt_id][1]
             frame = cv2.circle(frame, (kpt_x, kpt_y), kpt_radius, kpt_color, -1)
-    
+
+    cv2.imshow("Body", frame)
+    cv2.waitKey(1)
     # Write the processed frame to the output video
-    out.write(frame)
+    # out.write(frame)
 
 # Release resources
 cap.release()
-out.release()
+# out.release()
 cv2.destroyAllWindows()
