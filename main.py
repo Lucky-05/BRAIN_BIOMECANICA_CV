@@ -13,14 +13,8 @@ model.to(device)
 # 1 rgb
 cap = cv2.VideoCapture(1)
 
-
-
-# Get the width and height of the video frames
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
-# Create a VideoWriter object to save the output video
-# out = cv2.VideoWriter('output_video2-+.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30, (frame_width, frame_height))
 
 bbox_color = (150, 0, 0)    
 bbox_thickness = 6
@@ -34,11 +28,6 @@ bbox_labelstr = {
 
 # BGR
 kpt_color_map = {
-    # 0:{'name':'Nose', 'color':[0, 0, 255], 'radius':10},               
-    # 1:{'name':'Right Eye', 'color':[255, 0, 0], 'radius':10},          
-    # 2:{'name':'Left Eye', 'color':[255, 0, 0], 'radius':10},            
-    # 3:{'name':'Right Ear', 'color':[0, 255, 0], 'radius':10},        
-    # 4:{'name':'Left Ear', 'color':[0, 255, 0], 'radius':10},            
     5:{'name':'Right Shoulder', 'color':[193, 182, 255], 'radius':10},
     6:{'name':'Left Shoulder', 'color':[193, 182, 255], 'radius':10},   
     7:{'name':'Right Elbow', 'color':[16, 144, 247], 'radius':10},     
@@ -66,13 +55,6 @@ skeleton_map = [
     {'srt_kpt_id':6, 'dst_kpt_id':8, 'color':[0, 75, 255], 'thickness':5},          
     {'srt_kpt_id':7, 'dst_kpt_id':9, 'color':[56, 230, 25], 'thickness':5},         
     {'srt_kpt_id':8, 'dst_kpt_id':10, 'color':[0,240, 240], 'thickness':5},         
-    # {'srt_kpt_id':1, 'dst_kpt_id':2, 'color':[224,255, 255], 'thickness':5},        
-    # {'srt_kpt_id':0, 'dst_kpt_id':1, 'color':[47,255, 173], 'thickness':5},         
-    # {'srt_kpt_id':0, 'dst_kpt_id':2, 'color':[203,192,255], 'thickness':5},         
-    # {'srt_kpt_id':1, 'dst_kpt_id':3, 'color':[196, 75, 255], 'thickness':5},        
-    # {'srt_kpt_id':2, 'dst_kpt_id':4, 'color':[86, 0, 25], 'thickness':5},           
-    # {'srt_kpt_id':3, 'dst_kpt_id':5, 'color':[255,255, 0], 'thickness':5},          
-    # {'srt_kpt_id':4, 'dst_kpt_id':6, 'color':[255, 18, 200], 'thickness':5}         
 ]
 
 # Process each frame of the video
@@ -95,19 +77,6 @@ while cap.isOpened():
         frame = cv2.putText(frame, bbox_label, (bbox_xyxy[0]+bbox_labelstr['offset_x'], bbox_xyxy[1]+bbox_labelstr['offset_y']), cv2.FONT_HERSHEY_SIMPLEX, bbox_labelstr['font_size'], bbox_color, bbox_labelstr['font_thickness'])
         
         bbox_keypoints = bboxes_keypoints[idx]
-        # for skeleton in skeleton_map:
-        #     srt_kpt_id = skeleton['srt_kpt_id']
-        #     srt_kpt_x = bbox_keypoints[srt_kpt_id][0]
-        #     srt_kpt_y = bbox_keypoints[srt_kpt_id][1]
-            
-        #     dst_kpt_id = skeleton['dst_kpt_id']
-        #     dst_kpt_x = bbox_keypoints[dst_kpt_id][0]
-        #     dst_kpt_y = bbox_keypoints[dst_kpt_id][1]
-            
-        #     skeleton_color = skeleton['color']
-        #     skeleton_thickness = skeleton['thickness']
-            
-        #     frame = cv2.line(frame, (srt_kpt_x, srt_kpt_y), (dst_kpt_x, dst_kpt_y), color=skeleton_color, thickness=skeleton_thickness)
         
         for kpt_id in kpt_color_map:
             kpt_color = kpt_color_map[kpt_id]['color']
@@ -118,10 +87,6 @@ while cap.isOpened():
 
     cv2.imshow("Body", frame)
     cv2.waitKey(1)
-    # Write the processed frame to the output video
-    # out.write(frame)
 
-# Release resources
 cap.release()
-# out.release()
 cv2.destroyAllWindows()
